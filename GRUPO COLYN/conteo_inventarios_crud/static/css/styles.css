@@ -1,0 +1,246 @@
+
+/* ===========================
+   Variables generales
+=========================== */
+:root {
+    --color-primario: #2c3e50;
+    --color-primario-oscuro: #1a252f;
+    --color-secundario: #7f8c8d;
+    --color-secundario-oscuro: #626f70;
+    --color-fondo: #f4f6f8;
+    --color-tarjeta: #ffffff;
+    --color-borde: #e0e4e8;
+    --color-texto: #2c3e50;
+    --color-texto-suave: #6b7a89;
+    --color-exito: #27ae60;
+    --color-peligro: #e74c3c;
+    --radio-borde: 8px;
+    --sombra: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+ 
+* {
+    box-sizing: border-box;
+}
+ 
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--color-fondo);
+    color: var(--color-texto);
+    line-height: 1.5;
+}
+ 
+/* ===========================
+   Encabezado
+=========================== */
+.header {
+    background: var(--color-primario);
+    color: #fff;
+    padding: 28px 40px;
+    text-align: center;
+}
+ 
+.header h1 {
+    margin: 0 0 6px 0;
+    font-size: 1.8rem;
+}
+ 
+.header p {
+    margin: 0;
+    color: #cfd8dc;
+    font-size: 0.95rem;
+}
+ 
+/* ===========================
+   Contenedor principal
+=========================== */
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+ 
+/* ===========================
+   Tarjetas / secciones
+=========================== */
+.card {
+    background: var(--color-tarjeta);
+    border-radius: var(--radio-borde);
+    box-shadow: var(--sombra);
+    padding: 24px;
+    border: 1px solid var(--color-borde);
+}
+ 
+.card h2 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: var(--color-primario);
+    border-bottom: 2px solid var(--color-borde);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+}
+ 
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+ 
+.section-title h2 {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+ 
+.botones-reporte {
+    display: flex;
+    gap: 10px;
+}
+ 
+/* ===========================
+   Formularios
+=========================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    align-items: center;
+}
+ 
+input,
+select {
+    padding: 10px 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde);
+    font-size: 0.95rem;
+    background: #fdfdfd;
+    color: var(--color-texto);
+    width: 100%;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+ 
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.15);
+}
+ 
+input::placeholder {
+    color: #a3aeb8;
+}
+ 
+/* ===========================
+   Botones
+=========================== */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radio-borde);
+    font-size: 0.95rem;
+    cursor: pointer;
+    background: var(--color-primario);
+    color: #fff;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+ 
+button:hover {
+    background: var(--color-primario-oscuro);
+}
+ 
+button:active {
+    transform: scale(0.98);
+}
+ 
+.btn-secondary {
+    background: var(--color-secundario);
+}
+ 
+.btn-secondary:hover {
+    background: var(--color-secundario-oscuro);
+}
+ 
+/* ===========================
+   Tablas
+=========================== */
+.table-container {
+    overflow-x: auto;
+    border-radius: var(--radio-borde);
+    border: 1px solid var(--color-borde);
+}
+ 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+ 
+thead {
+    background: var(--color-primario);
+}
+ 
+th {
+    color: #fff;
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    white-space: nowrap;
+}
+ 
+td {
+    padding: 10px 14px;
+    border-top: 1px solid var(--color-borde);
+    font-size: 0.9rem;
+}
+ 
+tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+ 
+tbody tr:hover {
+    background: #f0f4f7;
+}
+ 
+/* Diferencias positivas / negativas en el reporte, si se agrega la clase */
+.diferencia-positiva {
+    color: var(--color-exito);
+    font-weight: 600;
+}
+ 
+.diferencia-negativa {
+    color: var(--color-peligro);
+    font-weight: 600;
+}
+ 
+/* ===========================
+   Pie de página
+=========================== */
+.footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--color-texto-suave);
+    font-size: 0.85rem;
+}
+ 
+/* ===========================
+   Responsive
+=========================== */
+@media (max-width: 600px) {
+    .header {
+        padding: 20px;
+    }
+ 
+    .card {
+        padding: 16px;
+    }
+ 
+    .section-title {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
