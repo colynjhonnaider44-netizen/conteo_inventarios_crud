@@ -1,0 +1,5 @@
+MYSQL_HOST = "localhost"
+MYSQL_USER = "tu_usuario_mysql"
+MYSQL_PASSWORD = "tu_contraseña_mysql"
+MYSQL_DATABASE = "nombre_de_tu_base_de_datos"
+SECRET_KEY = "reemplaza_esto_por_una_clave_segura"

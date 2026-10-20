@@ -249,3 +249,39 @@ function formatearFecha(fecha) {
     const date = new Date(fecha);
     return date.toLocaleString();
 }
+
+
+document.getElementById("formUsuario").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const mensaje = document.getElementById("mensajeUsuario");
+    const password = document.getElementById("nuevo_password").value;
+    const confirmar = document.getElementById("nuevo_confirmar").value;
+
+    if (password !== confirmar) {
+        mensaje.textContent = "Las contraseñas no coinciden";
+        mensaje.style.color = "red";
+        return;
+    }
+
+    const respuesta = await fetch("/api/usuarios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            nombre: document.getElementById("nuevo_nombre").value.trim(),
+            usuario: document.getElementById("nuevo_usuario").value.trim(),
+            password: password
+        })
+    });
+
+    const datos = await respuesta.json();
+
+    if (respuesta.ok) {
+        mensaje.textContent = datos.mensaje;
+        mensaje.style.color = "green";
+        e.target.reset();
+    } else {
+        mensaje.textContent = datos.error;
+        mensaje.style.color = "red";
+    }
+});

@@ -2,16 +2,20 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
     <!-- Permite que la página se adapte a celulares, tablets y computadores -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Sistema de Conteo Físico de Inventarios</title>
-
-    <!-- Archivo CSS externo -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
+   <header class="header">
+    <div class="user-bar">
+        <span>👤 {{ session.get('nombre') }}</span>
+        <a href="{{ url_for('logout') }}" class="btn-logout">Cerrar sesión</a>
+    </div>
+    <h1>Conteo Físico de Inventarios</h1>
+    <p>Sistema académico con CRUD de productos, conteo físico y reporte de diferencias.</p>
+</header>
 <body>
+
 
     <header class="header">
         <h1>Conteo Físico de Inventarios</h1>
@@ -19,6 +23,20 @@
     </header>
 
     <main class="container">
+        <!-- Sección para crear usuarios -->
+<section class="card">
+    <h2>Crear usuario</h2>
+
+    <form id="formUsuario" class="form-grid">
+        <input type="text" id="nuevo_nombre" placeholder="Nombre completo" required>
+        <input type="text" id="nuevo_usuario" placeholder="Usuario" required>
+        <input type="password" id="nuevo_password" placeholder="Contraseña (mín. 6 caracteres)" minlength="6" required>
+        <input type="password" id="nuevo_confirmar" placeholder="Confirmar contraseña" required>
+        <button type="submit">Crear usuario</button>
+    </form>
+
+    <p id="mensajeUsuario"></p>
+</section>
 
         <!-- Sección para registrar o actualizar productos -->
         <section class="card">
@@ -46,12 +64,16 @@
             </form>
         </section>
 
-        <!-- Sección de productos registrados -->
-        <section class="card">
-            <div class="section-title">
-                <h2>Productos registrados</h2>
-                <button onclick="cargarProductos()">Actualizar</button>
-            </div>
+        <!-- Sección de reporte -->
+<section class="card">
+    <div class="section-title">
+        <h2>Reporte de diferencias</h2>
+        <div>
+            <button onclick="cargarReporte()">Actualizar reporte</button>
+            <a href="/reporte/excel" class="btn-link">Exportar Excel</a>
+            <a href="/reporte/pdf" class="btn-link">Exportar PDF</a>
+        </div>
+    </div>
 
             <div class="table-container">
                 <table>
@@ -96,15 +118,10 @@
         <section class="card">
             <div class="section-title">
                 <h2>Reporte de diferencias</h2>
-                <div class="botones-reporte">
-                    <button onclick="cargarReporte()">Actualizar reporte</button>
-                    <button onclick="exportarReportePDF()" class="btn-secondary">Descargar PDF</button>
-                </div>
+                <button onclick="cargarReporte()">Actualizar reporte</button>
             </div>
 
-            <!-- id="reporteParaPDF" envuelve solo lo que se exportará -->
-            <div class="table-container" id="reporteParaPDF">
-                <h3 id="fechaReportePDF" style="display:none;"></h3>
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -132,58 +149,7 @@
         <p>Proyecto académico sencillo - CRUD + Inventarios</p>
     </footer>
 
-    <!-- Librerías para exportar a PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
     <!-- Archivo JavaScript externo -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
-    <!-- Función para exportar el reporte de diferencias a PDF -->
-    <script>
-        function exportarReportePDF() {
-            const filas = document.querySelectorAll('#tablaReporte tr');
-
-            if (filas.length === 0) {
-                alert('No hay datos en el reporte para exportar. Actualiza el reporte primero.');
-                return;
-            }
-
-            // Extrae los datos de la tabla ya renderizada en pantalla
-            const columnas = ['Fecha', 'Código', 'Producto', 'Ubicación', 'Sistema', 'Físico', 'Diferencia', 'Observación'];
-            const datos = [];
-
-            filas.forEach(fila => {
-                const celdas = fila.querySelectorAll('td');
-                if (celdas.length > 0) {
-                    const filaDatos = [];
-                    celdas.forEach(celda => filaDatos.push(celda.textContent.trim()));
-                    datos.push(filaDatos);
-                }
-            });
-
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF('l', 'mm', 'a4'); // horizontal, para que quepan las columnas
-
-            pdf.setFontSize(14);
-            pdf.text('Reporte de Diferencias - Conteo Físico de Inventarios', 14, 15);
-
-            pdf.setFontSize(10);
-            const fechaGeneracion = new Date().toLocaleString('es-CO');
-            pdf.text('Generado: ' + fechaGeneracion, 14, 21);
-
-            pdf.autoTable({
-                head: [columnas],
-                body: datos,
-                startY: 26,
-                styles: { fontSize: 8, cellPadding: 2 },
-                headStyles: { fillColor: [44, 62, 80] },
-                theme: 'striped'
-            });
-
-            pdf.save('reporte-diferencias.pdf');
-        }
-    </script>
-
 </body>
 </html>

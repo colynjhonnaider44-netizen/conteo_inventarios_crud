@@ -1,15 +1,18 @@
-from flask import Flask, render_template, request, jsonify
+
+from flask import (
+    Flask, render_template, request, jsonify,
+    redirect, url_for, session, flash
+)
 from db import get_connection
+from werkzeug.security import check_password_hash
+from functools import wraps
+from config import SECRET_KEY
 
 app = Flask(__name__)
+app.secret_key = SECRET_KEY
 
 
-@app.route("/")
-def home():
-    """
-    Carga la página principal del sistema.
-    """
-    return render_template("index.html")
+
 
 
 # ============================================================
@@ -339,6 +342,80 @@ def registrar_conteo():
         "cantidad_fisica": cantidad_fisica,
         "diferencia": diferencia
     }), 201
+
+
+
+app.secret_key = SECRET_KEY
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "id_usuario" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        usuario = request.form.get("usuario", "").strip()
+        password = request.form.get("password", "")
+
+        conexion = None
+        cursor = None
+
+        try:
+            conexion = get_connection()
+            cursor = conexion.cursor(dictionary=True)
+
+            cursor.execute(
+                """
+                SELECT id_usuario, usuario, password_hash, nombre, activo
+                FROM usuarios
+                WHERE usuario = %s
+                """,
+                (usuario,)
+            )
+
+            datos = cursor.fetchone()
+
+            if (
+                datos
+                and datos["activo"] == 1
+                and check_password_hash(datos["password_hash"], password)
+            ):
+                session.clear()
+                session["id_usuario"] = datos["id_usuario"]
+                session["usuario"] = datos["usuario"]
+                session["nombre"] = datos["nombre"] or datos["usuario"]
+
+                return redirect(url_for("inicio"))
+
+            flash("Usuario o contraseña incorrectos, o cuenta inactiva.", "error")
+
+        except Exception:
+            app.logger.exception("Error al iniciar sesión")
+            flash("Ocurrió un error al iniciar sesión. Revisa la conexión.", "error")
+
+        finally:
+            if cursor:
+                cursor.close()
+            if conexion:
+                conexion.close()
+
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+
+@app.route("/")
+@login_required
+def inicio():
+    return render_template("index.html")
 
 
 @app.route("/api/reporte", methods=["GET"])
